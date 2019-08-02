@@ -1,0 +1,192 @@
+\documentclass[12pt]{report}
+\usepackage{manual,epsf,url}
+\usepackage{epsf, pst-grad, pst-plot, pgf}
+\usepackage{amsmath, amssymb, amsthm}
+
+\def\QI{{\sc tFracGen}}
+\def\VQ{{\sc 4}}
+\def\PC{Paper coordinates}    \def\WC{World coordinates}
+
+%\textheight250mm
+%------------------------------------------------------------------------
+\setcounter{page}{-2}\pagestyle{empty}
+
+\begin{document}
+\ \vskip4cm
+{\centering\huge \QI\ \par}
+\vskip1cm
+{\LARGE\sc\centering Matlab script\\ for\\ generating truncated fractal random fields\par}
+
+\vskip15mm
+\begin{center}
+ \epsfysize105mm \epsffile{figure/image_iso_3d.eps}\par
+\end{center}
+
+\vfill
+{\sf Copyright \copyright Falk He{\ss}e, Vladyslav Prykhod'ko, 2011-2013
+\hfill Version 0.9$\beta$ 30.04.2013}
+
+\break
+
+%------------------------------------------------------------------------
+\begingroup\leftskip=5mm\parindent=0mm\sf\ \vfill
+
+{\large\sc Legal Considerations\par}
+\smallskip
+
+Copyright \copyright\ 2011-2013, Falk He{\ss}e, Vladyslav Prykhod'ko.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+\begin{itemize}
+	\item Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+	\item Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+	\item Neither the name of the Helmholtzcentre for Environmental Reserarch (UFZ) nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+\end{itemize}
+
+\QI\ IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Falk He{\ss}e OR Vladyslav Prykhod'ko BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+\vskip10mm
+
+Falk He{\ss}e\\
+UFZ - Helmhotz Center for Environmental Research\\
+Department of Computational Hydrosystems\\
+Permoserstr.~15\\
+D-04318 Leipzig\\
+GERMANY
+
+{\bigskip\small\par
+\tt e-mail: falk.hesse@ufz.de\\
+}
+
+\vfill\break
+
+\setcounter{page}{1}\pagestyle{plain}
+
+\chapter{Introduction and concepts}
+
+\QI\ was created for generating 1-dimensioal, 2-dimensional and 3-di\-men\-sio\-nal random fields with a truncated power-law variogram. When using commercial or free software, it is often hard to understand what is going on exactly when pushing buttons which is unacceptable from a scientific point of view and is why the \QI\ project was started. An other motivation for the ongoing development of \QI\ is that it can be used on any computer system with a working Matlab environment. There is no fancy GUI so you will need knowledge of Matlab. 
+
+% \bigskip
+% The main features of \QI\ are:
+% \begin{itemize}
+% \item Algorithms for 2D/3D grey scale image processing for image filtering and segmentation.
+% \item Algorithms for the quantification of 2D/3D binary images, including methods of mathematical morphology, topological analysis and image intersection.
+% \item Tools to generate 2D/3D random fields with predefined properties. 
+% \end{itemize}
+
+% \bigskip
+% {\bf Contributors:} \quad Thanks to Vladyslav Prykhod'ko for implementing several functions. 
+
+% \chapter{Installation and Use in a Matlab Environment}
+% 
+% To use the functions of \QI\ in your own programs, you may directly include the corresponding source files. The preferable way, however, is to link the \QI\ library to your programs.
+
+%------------------------------------------------------------------------
+\chapter{Reference Manual}
+
+
+\section{Basic structure}
+
+\QI\ is made up of several Matlab files, which in conjunction provide the functionality described above. In the following these files are listed and explained.
+
+\begin{figure}[ht]
+	\centering
+	\input{pstricks/Overview.tex}
+	\caption{Schematic of the different files.}
+	\label{fig:Overview}
+\end{figure}
+
+The main file is the eponymous {\tt Main*.m}, where the different variables are declared (see schematic in Figure \ref{fig:Overview}). Here the wildcard character is a placeholder for the dimension of the problem, i.e. {\tt 1D}, {\tt 2D} or {\tt 3D}. %In the second step random values are assigned to each pore in the {\tt getRadii.m} file. The flow field is solved for the network in the {\tt getFlow.m} file. In the last step the (reactive) transport for several species is computed in the {\tt getTransport.m} file.
+
+\section{Variables}
+
+Several variables are declared in the main file, that determine the shape and characteristics of the generated random fields. In the following these variables are listed and explained.
+
+\paragraph{Geostatistical parameters}
+
+There are several parameters, that describe the geostatistical characteristics of the random field
+
+\begin{itemize}
+	\item {\tt muK}, i.e. expectation value $\mu$ of the K-field ,
+	\item {\tt si2K}, i.e. variance $\sigma^2$ of the K-field,
+	\item {\tt muY}, i.e. the expectation value $\mu$ of the Y-field,
+	\item {\tt si2Y}, i.e. the variance $\sigma^2$ of the Y-field,
+	\item {\tt L\_geo}, which is the maximum geological length scale, 
+	\item {\tt l\_geo}, which is the minimum geological length scale,
+	\item {\tt H}, which is the Hurst coefficient as well as 
+	\item {\tt func}, which defines the variogram model function of the random field
+\end{itemize}
+
+The first four parameters describe the one-point distribution of the hydraulic conductivity field. The algorythm itself only creates a Gaussian random field $u$ with zero mean $\mu = 0$ and unit variance $\sigma^2 = 1$. The field of log-hydaulic conductivity $Y$ is then computed according to $Y = \sigma_Y u + \mu_Y$. The field of hydraulic conductivity $K$ is than computed according to $K = exp(Y)$. Due to the fixed relationship betwenn the $Y$ and the $K$ field only two of these for parameters need to be specified. If the values of the $K$ field are given, one can compute the corresponding $Y$ values according to 
+
+\begin{subequations}
+\begin{align}
+	\mu_Y & = \ln(\mu_K) - \frac12\ln \left( 1 + \frac{\sigma^2_K}{\mu_K^2} \right) \\
+	\sigma^2_Y & = \ln\left( 1 + \frac{\sigma^2_K}{\mu_K^2} \right).
+\end{align}
+\end{subequations}
+
+The maximum geolocical length scale {\tt L\_geo} in case of a truncated fractal field is the largest lengt scale of heterogeneities, that is represented in the random field. In case of a non-fractal field this value is the correlation lenght of the field. The minimum geological length scale {\tt l\_geo} in case of a truncated fractal field is the smallest lengt scale of heterogeneities, that is represented in the random field. In case of a non-fractal field this value is ignored. 
+
+The Hurst coefficient {\tt H} describes the fractality of the generated random field and is related to the fractal dimension $D_f$ of the generated strutures by the following relationship $H = 2 - D_f$.
+
+The parameter {\tt func} is a string variable the specifies the variogram model function. There are two fractal models, i.e. the truncated power law based on Gaussian modes {\tt tFracGauss} and the truncated power law based on exponential modes {\tt tFracExp}. The generator can also generate two non-fractal models, i.e. a Gaussian model {\tt Gauss} and a exponential model {\tt Exp}.
+
+\paragraph{Geometrical parameters}
+
+There are several parameters, that describe the geometrical characteristics of the random field
+
+\begin{itemize}
+	\item {\tt L\_num}, which is the maximum numerical length scale, 
+	\item {\tt l\_num}, which is the minimum numerical length scale,
+	\item {\tt alpha}, which is the angle between the main axis of the random field and
+	\item {\tt gamma}, which is the angle between the main axis of the random field and the numerical grid.
+\end{itemize}
+
+The numerical grid on which the random field is defined can be a regular square lattice but also any unstructured grid if the Randomization method or the Hybrid method is used for the generation of the random field. 
+
+\begin{figure}[ht]
+	\centering
+	\input{pstricks/Angles.tex}
+	\caption{Schematic of the different angles, which are used in the generator.}
+	\label{fig:Angles}
+\end{figure}
+
+In case of two or three dimensions the main axis of the random field can be at an angle, too. Here {\tt alpha} is the angle between the main axis of the spectral density function of the random field. In two dimension {\tt alpha} has one compontent being the angle between the $x$- and $y$-axis, whereas in three dimension {\tt alpha} has two compontents the second being the angle between the $y$- and $z$-axis. The parameter {\tt gamma} is the angle between the $x$-axis of the random field and the numerical grid.
+
+The rotation is defined as $\tilde{{\bf x}} = R {\bf x}$ with the rotation matrix $R$ being given according to
+
+\begin{subequations}
+\begin{align}
+	R & = \left( \begin{array}{cc} \cos(\gamma) & -\sin(\gamma) \\ \sin(\gamma) & \cos(\gamma) \end{array} \right) \\
+	R & = \left( \begin{array}{ccc} \cos(\gamma) & -\sin(\gamma) & 0 \\ \sin(\gamma) & \cos(\gamma) & 0  \\ 0 & 0 & 1 \end{array} \right)
+\end{align}
+\end{subequations}
+
+in two and three dimensions repectively. The inverse roation is simply computed according to ${\bf x} = R^{-1} \tilde{{\bf x}}$. The transfomration is defined as ${\bf x}' = T {\bf x}$ with the transformation matrx $T$ bring given according to 
+
+\begin{subequations}
+\begin{align}
+	T & = \left( \begin{array}{cc} 1 & \tan(\alpha) \\ 0 & 1 \end{array} \right) \\
+	T & = \left( \begin{array}{ccc} 1 & \tan(\alpha_1) & 0 \\ 0 & 1 & \tan(\alpha_2)  \\ 0 & 0 & 1 \end{array} \right)
+\end{align}
+\end{subequations}
+
+in two and three dimensions repectively. The inverse transformation is simply computed according to ${\bf x} = T^{-1} {\bf x}'$.
+ 
+\paragraph{Numerical parameters}
+
+There are several parameters, that describe the numerical characteristics of the generation of the random field
+
+\begin{itemize}
+	\item {\tt nMode}, which is the number of grid points in the Fourier space.
+\end{itemize}
+
+The parameter {\tt nMode} is specifying the number of grid points in the Fourier space by which the integral over the spectral density is approximated. The more points the better the approximation and the more details can be represented in the generated numerical random field.
+
+\end{document}
+
+

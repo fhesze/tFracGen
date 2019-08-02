@@ -1,0 +1,62 @@
+% Generated with LaTeXDraw 2.0.5
+% Fri Dec 06 15:48:05 CET 2013
+% \usepackage[usenames,dvipsnames]{pstricks}
+% \usepackage{epsfig}
+% \usepackage{pst-grad} % For gradients
+% \usepackage{pst-plot} % For axes
+\scalebox{1} % Change this value to rescale the drawing.
+{
+\begin{pspicture}(0,-7.029999)(12.88,7.029999)
+\psline[linewidth=0.04cm](4.84,-6.270001)(5.66,-6.270001)
+\usefont{T1}{ptm}{m}{n}
+\rput{90.48959}(6.4949903,5.6030636){\rput(0.46386304,6.0038953){Main*.m}}
+\usefont{T1}{ptm}{m}{n}
+\rput{90.48959}(9.965413,1.92217){\rput(4.0238614,5.8838954){FourMeth.m}}
+\usefont{T1}{ptm}{m}{n}
+\rput{90.48959}(6.2722335,-1.7085739){\rput(3.9768848,2.2376454){RandMeth.m}}
+\usefont{T1}{ptm}{m}{n}
+\rput{90.48959}(2.7060807,-5.346512){\rput(3.9973006,-1.312822){HybMeth.m}}
+\usefont{T1}{ptm}{m}{n}
+\rput{90.48959}(-0.8247504,-8.940105){\rput(4.013706,-4.8962626){FWMeth.m}}
+\psline[linewidth=0.04cm](4.84,-6.270001)(4.84,-7.009999)
+\psline[linewidth=0.04cm](4.82,-2.650001)(5.64,-2.650001)
+\pspolygon[linewidth=0.04](3.6,-0.210001)(5.64,-0.210001)(5.64,-2.666408)(4.85697,-3.390001)(3.6,-3.390001)
+\psline[linewidth=0.04cm](4.84,-2.650001)(4.84,-3.3899987)
+\psline[linewidth=0.04cm](4.82,0.949999)(5.64,0.949999)
+\pspolygon[linewidth=0.04](3.58,3.389999)(5.62,3.389999)(5.62,0.9335918)(4.83697,0.209999)(3.58,0.209999)
+\psline[linewidth=0.04cm](4.84,0.949999)(4.84,0.21000117)
+\psline[linewidth=0.04cm](4.84,4.509999)(5.66,4.509999)
+\pspolygon[linewidth=0.04](3.6,6.949999)(5.64,6.949999)(5.64,4.493592)(4.85697,3.769999)(3.6,3.769999)
+\psline[linewidth=0.04cm](4.84,4.509999)(4.84,3.770001)
+\psline[linewidth=0.04cm](1.22,4.529999)(2.04,4.529999)
+\pspolygon[linewidth=0.04](0.0,6.969999)(2.04,6.969999)(2.04,4.513592)(1.2569697,3.789999)(0.0,3.789999)
+\psline[linewidth=0.04cm](1.24,4.529999)(1.24,3.790001)
+\psline[linewidth=0.04cm](8.42,0.929999)(9.24,0.929999)
+\usefont{T1}{ptm}{m}{n}
+\rput{90.48959}(9.652046,-5.6802583){\rput(7.6313615,1.9637371){getRandomSet.m}}
+\pspolygon[linewidth=0.04](7.2,3.369999)(9.24,3.369999)(9.24,0.9135918)(8.45697,0.189999)(7.2,0.189999)
+\psline[linewidth=0.04cm](8.44,0.929999)(8.44,0.19000117)
+\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(2.02,5.589999)(3.62,5.589999)
+\psline[linewidth=0.04cm](2.82,5.589999)(2.82,-5.410001)
+\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(2.82,-5.410001)(3.62,-5.410001)
+\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(2.84,-1.810001)(3.64,-1.810001)
+\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(2.82,1.789999)(3.62,1.789999)
+\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(5.64,1.789999)(7.24,1.789999)
+\pspolygon[linewidth=0.04](10.8,3.409999)(12.84,3.409999)(12.84,0.953592)(12.05697,0.229999)(10.8,0.229999)
+\usefont{T1}{ptm}{m}{n}
+\rput{90.48959}(13.152729,-9.144906){\rput(11.0967865,1.930612){CumDistFunc.m}}
+\psline[linewidth=0.04cm](5.62,-1.810001)(10.02,-1.810001)
+\psline[linewidth=0.04cm](10.02,1.789999)(10.02,-1.810001)
+\psline[linewidth=0.04cm](12.04,0.969999)(12.86,0.969999)
+\psline[linewidth=0.04cm](12.04,0.969999)(12.04,0.23000118)
+\pspolygon[linewidth=0.04](10.8,7.009999)(12.84,7.009999)(12.84,4.553592)(12.05697,3.829999)(10.8,3.829999)
+\psline[linewidth=0.04cm](12.02,4.589999)(12.84,4.589999)
+\psline[linewidth=0.04cm](12.02,4.589999)(12.02,3.850001)
+\usefont{T1}{ptm}{m}{n}
+\rput{90.48959}(16.802193,-5.532051){\rput(11.121087,5.5851517){SpecDensFunc.m}}
+\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(5.62,5.589999)(10.82,5.589999)
+\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(9.22,1.789999)(10.82,1.789999)
+\pspolygon[linewidth=0.04](3.6,-3.810001)(5.64,-3.810001)(5.64,-6.266408)(4.85697,-6.990001)(3.6,-6.990001)
+\end{pspicture} 
+}
+

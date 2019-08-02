@@ -1,0 +1,208 @@
+function [meanGamma meanLag] = estimVariogram(x, u, flag)
+
+%% This function estimates the Variogram function of a Gaussian random 
+%% field.
+%
+% Copyright (C) 2013  Falk Heße, Vladyslav Prykhodko.
+% The terms of the license agreement can be found in the README.txt.
+%
+
+[n m] = size(x);
+
+if n == 1
+    [meanGamma meanLag] = estimVariogram1D(x(1,:), u);
+end
+
+if n == 2
+    [meanGamma meanLag] = estimVariogram2D(x(1,:), x(2,:), u, flag);
+end
+
+if n == 3
+    [meanGamma meanLag] = estimVariogram3D(x(1,:), x(2,:), x(3,:), u, flag);
+end
+
+end
+
+
+%% One-dimensional fields -------------------------------------------------
+%
+%
+
+function [meanGammaX meanLag] = estimVariogram1D(x, u)
+
+%% ----- preprocessing the data -------------------------------------------
+
+%%-- random data sampling -------------------------------------------------
+
+% number of sample points
+stations = 100;
+
+% random sample
+selectedStat = floor(rand(stations, 1)*length(x)) + 1;
+
+% coordinates of stations
+xSel = x(selectedStat);
+% measurements at stations
+uSel = u(selectedStat);
+
+[meanGammaX meanLag] = VariogramEstim(xSel, ones(size(xSel)), uSel);
+meanLag = meanLag';
+
+end
+
+%% Two-dimensional fields -------------------------------------------------
+%
+%
+
+function [meanGamma meanLag] = estimVariogram2D(x, y, u, flag)
+
+[XI, YI]    = meshgrid(x, y);
+
+%% ----- preprocessing the data -------------------------------------------
+
+[yLen xLen] = size(XI);
+
+%%-- random data sampling -------------------------------------------------
+
+% number of sample points
+stations = 100;
+
+% random sample
+% selectedStat = floor(rand(stations, 1)*xLen) + 1
+
+selectedStat = [61, 46, 28, 93, 26, 13, 90, 4, 40, 79, 39, 77, 66, 87, 27, 8, 25, 4, 84, 44, 46, 62, 3
+    61, 70, 11, 54, 28, 59, 12, 69, 29, 47, 54, 29, 39, 33, 80, 28, 78,
+    34, 64, 5, 61, 25, 29, 14, 51, 4, 35, 51, 78, 77, 85, 33, 64, 67, 57,
+    67, 46, 21, 81, 43, 47, 37, 32, 4, 58, 34, 28, 93, 74, 2, 18, 58, 5,
+     3, 67, 96, 80, 30, 7, 55, 26, 88, 10, 16, 7, 74, 14, 77, 57, 92, 87,
+    37, 94, 1, 94, 87, 14];
+
+% % coordinates of stations
+% xSel = XI(1, selectedStat);
+% % measurements at stations
+% uSel = u(1, selectedStat);
+
+% [meanGammaX meanLag] = VariogramEstim(xSel, ones(size(xSel)), uSel);
+
+for n = 1:xLen
+    
+    switch flag
+        case 'X'
+            xSel = XI(n, selectedStat);    
+            uSel = u(n, selectedStat);
+            [Gamma(n, :) meanLag] = VariogramEstim(xSel, ones(size(xSel)), uSel);
+            meanGamma = mean(Gamma);
+        case 'Y' 
+            ySel = YI(selectedStat, n);
+            uSel = u(selectedStat, n);
+            [Gamma(n, :) meanLag] = VariogramEstim(ySel, ones(size(ySel)), uSel);
+            meanGamma = mean(Gamma);
+    end
+    
+end
+
+switch flag
+    case 'XY'
+        selectedStat = floor(rand(stations, 1)*xLen*yLen) + 1;
+        vectX = reshape(XI, xLen*yLen, 1); 
+        vectY = reshape(YI, xLen*yLen, 1);
+        vectU = reshape(u, xLen*yLen, 1);
+        xSel = vectX(selectedStat);
+        ySel = vectY(selectedStat);
+        uSel = vectU(selectedStat);
+        
+        [meanGamma meanLag] = VariogramEstim(xSel, ySel, uSel);
+end
+
+end
+
+
+%% Three-dimensional fields -----------------------------------------------
+%
+%
+
+function [meanGamma meanLag] = estimVariogram3D(x, y, z, u, flag)
+
+xStep   = length(x);
+yStep   = length(y);
+zStep   = length(z);
+
+xSel    = floor(rand(1)*xStep) + 1;
+ySel    = floor(rand(1)*yStep) + 1;
+zSel    = floor(rand(1)*zStep) + 1;
+
+switch flag
+    
+    case 'X'
+        
+        uSel = u(:, ySel, zSel);
+        [meanGamma meanLag] = estimVariogram1D(x, uSel);
+        
+    case 'Y'
+        
+        uSel = u(xSel, :, zSel);
+        [meanGamma meanLag] = estimVariogram1D(y, uSel);
+    
+    case 'Z'
+        
+        uSel = u(xSel, ySel, :);
+        [meanGamma meanLag] = estimVariogram1D(z, uSel);
+        
+%     otherwise
+% 
+%         [XI, YI] = meshgrid(x, y);
+% 
+%         % two-dimensional estimation of variogram 
+%         [meanGamma meanLag] = VariogramEstim2D(XI, YI, u(:,:,zSel), flag); 
+        
+end
+
+end
+
+
+%% misc -------------------------------------------------------------------
+%
+%
+
+function [meanGamma meanLag] = VariogramEstim(xSel, ySel, uSel)
+
+
+%% ----- calculate emperical variogram cloud ------------------------------
+
+indx = 1;
+for i = 1:length(uSel)-1
+    for j = i+1:length(uSel)
+        
+        lag(indx) = sqrt((xSel(j) - xSel(i)).^2 + (ySel(j) - ySel(i)).^2);
+        gamma(indx) = 0.5.*abs(uSel(j) - uSel(i)).^2;
+        indx = indx + 1;
+        
+    end
+end
+
+
+%% ----- calculate emperical variogram distribution -----------------------
+
+numCont = 50;
+container = linspace(0, max(lag), numCont);
+[n, bin] = histc(lag,  container);          % assign calculated lags to bins
+meanGamma = zeros(numCont, 1);              % predefined vector of zeros
+meanLag = meanGamma;
+
+% calculate means
+for i = 1:numCont
+    
+	k = find(bin==i);
+    	
+    	if lag(k)
+    		meanLag(i) = mean(lag(k));       % Mean lag
+    		meanGamma(i) = mean(gamma(k));   % Mean gamma
+    	end
+    
+end
+
+% getting rid of latter half of the variogram
+meanLag(round(length(meanLag)./2):end) = [];                       
+meanGamma(round(length(meanGamma)./2):end) = [];
+
+end
